@@ -1,4 +1,4 @@
-package com;
+package com.datastructures;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -25,7 +25,7 @@ public class HashMapTest {
     }
 
     @Test
-    public void testGetByKey() {
+    public void testGetValueByKey() {
         long expectedResult = 3;
         Assert.assertEquals(expectedResult, hashMap.get(3));
     }
