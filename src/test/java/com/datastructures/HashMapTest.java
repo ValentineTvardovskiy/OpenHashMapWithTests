@@ -19,25 +19,25 @@ public class HashMapTest {
     }
 
     @Test
-    public void testTrueSize() {
+    public void testSize_shouldReturnProperSizeOfNonEmptyMap() {
         int expectedResult = 5;
         Assert.assertEquals(expectedResult, hashMap.size());
     }
 
     @Test
-    public void testGetValueByKey() {
+    public void testGetByKey_shouldReturnProperValue() {
         long expectedResult = 3;
         Assert.assertEquals(expectedResult, hashMap.get(3));
     }
 
     @Test(expected = RuntimeException.class)
-    public void testGetByWrongKey() {
+    public void testGetByKeyNegativeScenario_shouldNotFoundKey() {
         int key = 55;
         hashMap.get(key);
     }
 
     @Test
-    public void testPutSameKeyButAnotherValue() {
+    public void testPutSameKeyButAnotherValue_shouldRewriteValueForThisKey() {
         long previousResult = hashMap.get(1);
         hashMap.put(1, 10);
         long newResult = hashMap.get(1);
@@ -45,7 +45,7 @@ public class HashMapTest {
     }
 
     @Test
-    public void testPutValueWithKeyBiggerThanCapacity() {
+    public void testPutValueWithKeyBiggerThanCapacity_shouldSimplyPutInFreePosition() {
         hashMap.put(122, 123);
         long expectedResult = 123;
         Assert.assertEquals(expectedResult, hashMap.get(122));
@@ -53,7 +53,7 @@ public class HashMapTest {
     }
 
     @Test
-    public void testPutAlreadyUsedIndexButAnotherKey() {
+    public void testPutAlreadyUsedIndexButAnotherKey_shouldSimplyPutInFreePosition() {
         long previousResult = hashMap.get(2);
         hashMap.put(18, 555);
         long expectedResult = hashMap.get(18);
