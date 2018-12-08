@@ -4,8 +4,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 public class HashMapTest {
 
     private HashMap hashMap;
@@ -13,14 +11,14 @@ public class HashMapTest {
     @Before
     public void setUp() {
         hashMap = new HashMap();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 50; i++) {
             hashMap.put(i, i);
         }
     }
 
     @Test
     public void testSize_shouldReturnProperSizeOfNonEmptyMap() {
-        int expectedResult = 5;
+        int expectedResult = 50;
         Assert.assertEquals(expectedResult, hashMap.size());
     }
 
@@ -30,7 +28,7 @@ public class HashMapTest {
         Assert.assertEquals(expectedResult, hashMap.get(3));
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = NullPointerException.class)
     public void testGetByKeyNegativeScenario_shouldNotFoundKey() {
         int key = 55;
         hashMap.get(key);

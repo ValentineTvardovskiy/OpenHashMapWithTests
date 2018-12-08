@@ -1,63 +1,54 @@
 package com.datastructures;
 
-import java.util.Arrays;
-
 public class HashMap {
 
-    private static final int FREE = Integer.MIN_VALUE;
     private static final int INITIAL_LENGTH = 16;
     private static final double LOAD_FACTOR = 1.25;
 
     private int capacity;
-    private int size = 0;
-    private int[] keys;
-    private long[] values;
+    private int size;
+    private Pair[] pairs;
 
     public HashMap() {
         this.capacity = INITIAL_LENGTH;
-        this.keys = new int[INITIAL_LENGTH];
-        this.values = new long[INITIAL_LENGTH];
-
-        Arrays.fill(keys, FREE);
-        Arrays.fill(values, FREE);
+        pairs = new Pair[INITIAL_LENGTH];
     }
 
     public void put(int key, long value) {
-        putNewValue(key, value);
+        Pair pair = new Pair(key, value);
+        putPair(pair);
     }
 
     public long get(int key) {
-        return getValueByKey(key);
+        return getPair(key).value;
     }
 
     public int size() {
         return size;
     }
 
-
-    private void putNewValue(int key, long value) {
+    private void putPair(Pair pair) {
         checkCurrentLength();
 
-        int index = hash(key);
-        int step = step(key);
+        int index = hash(pair.key);
+        int step = step(pair.key);
 
-        while (keys[index] != FREE && keys[index] != key) {
+        while (pairs[index] != null && pairs[index].key != pair.key) {
             index += step;
             index %= capacity;
         }
-        keys[index] = key;
-        values[index] = value;
+        pairs[index] = pair;
         size++;
     }
 
-    private long getValueByKey(int key) {
+    private Pair getPair(int key) {
         int index = hash(key);
         int step = step(key);
         int count = size;
 
-        while (keys[index] != FREE) {
-            if (keys[index] == key) {
-                return values[index];
+        while (pairs[index] != null) {
+            if (pairs[index].key == key) {
+                return pairs[index];
             }
             index += step;
             index %= capacity;
@@ -65,7 +56,7 @@ public class HashMap {
             count--;
             if (count == 0) break;
         }
-        throw new RuntimeException("Not found");
+        return null;
     }
 
     private int hash(int key) {
@@ -84,27 +75,32 @@ public class HashMap {
     }
 
     private void increaseLength() {
-        capacity = capacity * 2;
+        capacity = capacity << 1;
 
-        int[] newKeysArray = new int[capacity];
-        long[] newValuesArray = new long[capacity];
+        Pair[] newPairs = new Pair[capacity];
 
-        Arrays.fill(newKeysArray, FREE);
-        Arrays.fill(newValuesArray, FREE);
+        for (Pair pair : pairs) {
+            if (pair != null) {
+                int index = hash(pair.key);
+                int step = step(pair.key);
 
-        for (int i = 0; i < keys.length; i++) {
-            int index = hash(keys[i]);
-            int step = step(keys[i]);
-
-            while (newKeysArray[index] != FREE && newKeysArray[index] != keys[i]) {
-                index += step;
-                index %= capacity;
+                while (newPairs[index] != null && newPairs[index].key != pair.key) {
+                    index += step;
+                    index %= capacity;
+                }
+                newPairs[index] = pair;
             }
-            newKeysArray[index] = keys[i];
-            newValuesArray[index] = values[i];
         }
+        pairs = newPairs;
+    }
 
-        keys = newKeysArray;
-        values = newValuesArray;
+    class Pair {
+        private int key;
+        private long value;
+
+        public Pair(int key, long value) {
+            this.key = key;
+            this.value = value;
+        }
     }
 }
